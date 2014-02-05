@@ -7,5 +7,5 @@ if __name__ == "__main__":
 	lex = lex.Lexer()
 	st = netlist.read("test.spx_2")
 	s = lex._parse_one_line(st)
-	print s[0]
+	print s[1]
 

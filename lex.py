@@ -72,7 +72,8 @@ class Lexer(object):
 			return False
 	def _is_value(self, s):
 		a = re.match(self._VALUE_PATTERN, s)
-		if a:
+		e = re.match('([^=]+=[^=]+)', s)
+		if a and e is None:
 			return True
 		else:
 			return False
