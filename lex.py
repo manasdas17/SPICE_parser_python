@@ -1,6 +1,7 @@
 
-import StringIO
 import re
+import StringIO
+from collections import defaultdict
 
 class Lexer(object):
 	_ELEMENT = "ELEMENT"
@@ -14,21 +15,33 @@ class Lexer(object):
 	_ELEMENT_PATTERN = '(^[a-zA-z]+[a-zA-Z0-9]*)'
 #	_PIN_PATTERN = '(^[a-zA-z]+[0-9]*[:]?[a-zA-Z0-9]*)'
 #	_ATTRIBUTE_PATTERN = '(^[a-zA-Z0-9_]+[0-9]*(\s)*[=](\s)*[a-z0-9.-]+)'
-	_ATTRIBUTE_PATTERN = r'[\w_]+\s*=\s*[\w\.\-]+' # matches ad = 0.013p
-	_PIN_PATTERN = r'\w+\s*:?\s*\w+'  # matches VSS:F85
+	_ATTRIBUTE_PATTERN = r'[\w_]+\s*=\s*[\w\.\-]+' 
+	_PIN_PATTERN = r'\w+\s*:?\s*\w+'
 	_VALUE_PATTERN = '(^[0-9eu.+-]+)'
 	_NEW_LINE_PATTERN = '(^[+ ]+)'
 	def _string_to_list(self, s):
 		l = []
+		s = s.replace('\n','')
+		s = s.replace('\r','')
 		l = s.split(" ")
 		return l
 	def _parse_one_line(self, s):
+		d = {}
+		i = 0
+	#	l = []
+		ll = []
 		buf = StringIO.StringIO(s)
 		line = buf.readline()
-	#	while line:
-	#		line = buf.readline()
-		return line
-	#	return s
+		ll = self._check_element(line)
+		d[i] = ll
+	#	l.append(ll)
+		while line:
+			line = buf.readline()
+			ll = self._check_element(line)
+		#	l.append(ll)
+			d[i] = ll
+			i = i + 1
+		return d
 	def _is_attribute(self, s):
 		a = re.match(self._ATTRIBUTE_PATTERN, s)
 		if a:
@@ -55,32 +68,42 @@ class Lexer(object):
 		else:
 			return False
 	def _check_element(self, s):
-		ss = s
-		t = re.match(self._TRANSISTOR_PATTERN, ss)
-		r = re.match(self._RESISTOR_PATTERN, ss)
-		c = re.match(self._CAPACITOR_PATTERN, ss)
-		d = re.match(self._DIODE_PATTERN, ss)
-		n = re.match(self._NEW_LINE_PATTERN, ss)
+		ll = []
+	#	ss = s
+		t = re.match(self._TRANSISTOR_PATTERN, s)
+		r = re.match(self._RESISTOR_PATTERN, s)
+		c = re.match(self._CAPACITOR_PATTERN, s)
+		d = re.match(self._DIODE_PATTERN, s)
+		n = re.match(self._NEW_LINE_PATTERN, s)
 		if t == 0 and r == 0 and c == 0 and d == 0 and n == 0:
 			return "Unrecognizable instructions"
 		else:
 			if t:
 				l = self._string_to_list(s)
-				self._make_tokens(l)
-				return "TRANSISTOR"
+				ll = self._make_tokens(l)
+				return ll
+			#	return "TRANSISTOR"
 			if r:
 				l = self._string_to_list(s)
-				self._make_tokens(l)
-				print l[0].split()
-				return "RESISTOR"
+				ll = self._make_tokens(l)
+				#print l[0].split()
+				return ll
+			#	return "RESISTOR"
 			if c:
 				l = self._string_to_list(s)
-				self._make_tokens(l)
-				return "CAPACITOR"
+				ll = self._make_tokens(l)
+				return ll
+			#	return "CAPACITOR"
 			if d:
-				return "DIODE"
+				l = self._string_to_list(s)
+				ll = self._make_tokens(l)
+				return ll
+			#	return "DIODE"
 			if n:
-				return "NEW LINE"
+				l = self._string_to_list(s)
+				ll = self._make_tokens(l)
+				return ll
+			#	return "NEW LINE"
 	def _make_tokens(self, l):
 		ll = []
 		for i in xrange(len(l)):
@@ -105,9 +128,9 @@ class Lexer(object):
 				print t
 				ll.append(t)
 		if not ll:
-			return ll
-		else:
 			return None
+		else:
+			return ll
 
 
 
