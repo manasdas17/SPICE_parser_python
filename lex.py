@@ -13,12 +13,16 @@ class Lexer(object):
 	_CAPACITOR_PATTERN = '(^[c|C][0-9a-zA-Z_]+)'
 	_DIODE_PATTERN = '(^[d|D][0-9a-zA-Z_]+)'
 	_ELEMENT_PATTERN = '(^[a-zA-z]+[a-zA-Z0-9]*)'
-#	_PIN_PATTERN = '(^[a-zA-z]+[0-9]*[:]?[a-zA-Z0-9]*)'
-#	_ATTRIBUTE_PATTERN = '(^[a-zA-Z0-9_]+[0-9]*(\s)*[=](\s)*[a-z0-9.-]+)'
 	_ATTRIBUTE_PATTERN = r'[\w_]+\s*=\s*[\w\.\-]+' 
 	_PIN_PATTERN = r'\w+\s*:?\s*\w+'
 	_VALUE_PATTERN = '(^[0-9eu.+-]+)'
 	_NEW_LINE_PATTERN = '(^[+ ]+)'
+	def _merge_two_string(self, s1, s2):
+		s2 = s1 + ' ' + s2
+		return s2
+	def _clean_string(self, s):
+		s = s.lstrip("+ ")
+		return s
 	def _string_to_list(self, s):
 		l = []
 		s = s.replace('\n','')
@@ -28,19 +32,24 @@ class Lexer(object):
 	def _parse_one_line(self, s):
 		d = {}
 		i = 0
-	#	l = []
 		ll = []
 		buf = StringIO.StringIO(s)
 		line = buf.readline()
+		line_2 = line
 		ll = self._check_element(line)
 		d[i] = ll
-	#	l.append(ll)
 		while line:
 			line = buf.readline()
-			ll = self._check_element(line)
-		#	l.append(ll)
+			if line.startswith('+'):
+				line = self._clean_string(line)
+				line_2 = self._clean_string(line_2)
+				line = self._merge_two_string(line_2, line)
+				line_2 = line
+				continue
+			ll = self._check_element(line_2)
 			d[i] = ll
 			i = i + 1
+			line_2 = line
 		return d
 	def _is_attribute(self, s):
 		a = re.match(self._ATTRIBUTE_PATTERN, s)
@@ -67,9 +76,14 @@ class Lexer(object):
 			return True
 		else:
 			return False
+	def _is_new_line(self, s):
+		a = re.match(self._NEW_LINE_PATTERN, s)
+		if a:
+			return True
+		else:
+			return False
 	def _check_element(self, s):
 		ll = []
-	#	ss = s
 		t = re.match(self._TRANSISTOR_PATTERN, s)
 		r = re.match(self._RESISTOR_PATTERN, s)
 		c = re.match(self._CAPACITOR_PATTERN, s)
@@ -111,6 +125,7 @@ class Lexer(object):
 			be = self._is_element(l[i])
 			bp = self._is_pin(l[i])
 			bv = self._is_value(l[i])
+			bn = self._is_new_line(l[i])
 			if ba:
 				t = (self._ATTRIBUTE, l[i])
 				print t
