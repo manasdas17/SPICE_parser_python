@@ -8,13 +8,15 @@ class Lexer(object):
 	_PIN = "PIN"
 	_ATTRIBUTE = "ATTRIBUTE"
 	_VALUE = "VALUE"
+	_CELL_START_PATTERN = '(.SUBCKT.*)'
+	_CELL_END_PATTERN = '(^.ends)'
 	_TRANSISTOR_PATTERN = '(^[X|m|M][0-9a-zA-Z_]+)'
 	_RESISTOR_PATTERN = '(^[r|R][0-9a-zA-Z_]+)'
 	_CAPACITOR_PATTERN = '(^[c|C][0-9a-zA-Z_]+)'
 	_DIODE_PATTERN = '(^[d|D][0-9a-zA-Z_]+)'
 	_ELEMENT_PATTERN = '(^[a-zA-z]+[a-zA-Z0-9]*)'
 	_ATTRIBUTE_PATTERN = r'[\w_]+\s*=\s*[\w\.\-]+' 
-	_PIN_PATTERN = r'\w+\s*:?\s*\w+'
+	_PIN_PATTERN = r'\w+\s*:?\s*\w*'
 	_VALUE_PATTERN = '(^[0-9eu.+-]+)'
 	_VALUE_PATTERN_2 = '(=\w*.?\w*-?\w*)'
 	_NEW_LINE_PATTERN = '(^[+ ]+)'
@@ -27,6 +29,7 @@ class Lexer(object):
 		return s
 	def _string_to_list(self, s):
 		l = []
+		stack = []
 		s = s.replace('\n','')
 		s = s.replace('\r','')
 		l = s.split(" ")
@@ -41,7 +44,6 @@ class Lexer(object):
 			line = buf.readline()
 			if line:
 				if line.startswith('+'):
-					b = True;
 					line = self._clean_string(line)
 					line_2 = self._clean_string(line_2)
 					line = self._merge_two_string(line_2, line)
@@ -88,6 +90,12 @@ class Lexer(object):
 			return True
 		else:
 			return False
+	def _is_cell(self, s):
+		a = re.match(self._CELL_START_PATTERN, s)
+		if a:
+			return True
+		else:
+			return False
 	def _tokenize_attribute(self, l):
 		ll = []
 		s = ''.join(l)
@@ -107,35 +115,48 @@ class Lexer(object):
 		c = re.match(self._CAPACITOR_PATTERN, s)
 		d = re.match(self._DIODE_PATTERN, s)
 		n = re.match(self._NEW_LINE_PATTERN, s)
-		if t == 0 and r == 0 and c == 0 and d == 0 and n == 0:
+		cc = re.match(self._CELL_START_PATTERN, s)
+		ce = re.match(self._CELL_END_PATTERN, s)
+		if t == 0 and r == 0 and c == 0 and d == 0 and n == 0 and cc == 0:
 			return "Unrecognizable instructions"
 		else:
 			if t:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
+		#		print ll
 				return ll
 			#	return "TRANSISTOR"
 			if r:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
+		#		print ll
 				#print l[0].split()
 				return ll
 			#	return "RESISTOR"
 			if c:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
+		#		print ll
 				return ll
 			#	return "CAPACITOR"
 			if d:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
+		#		print ll
 				return ll
 			#	return "DIODE"
 			if n:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
+		#		print ll
 				return ll
 			#	return "NEW LINE"
+			if cc:
+				l = self._string_to_list(s)
+				ll = self._make_tokens(l)
+				return ll
+			if ce:
+				return
 	def _make_tokens(self, l):
 		ll = []
 		for i in xrange(len(l)):
@@ -148,27 +169,19 @@ class Lexer(object):
 				self._tokenize_attribute(l[i])
 				ll = self._tokenize_attribute(l[i])
 				lll = [self._ATTRIBUTE, ll]
-				t = (self._ATTRIBUTE, ll)
-			#	print t
-				print lll
+			#	print lll
 				ll.append(lll)
 			if be and i == 0:
 				lll = [self._ELEMENT, l[i]]
-				t = (self._ELEMENT, l[i])
-			#	print t
-				print lll
+			#	print lll
 				ll.append(lll)
 			if bp and i != 0:
 				lll = [self._PIN, l[i]]
-				t = (self._PIN, l[i])
-			#	print t
-				print lll
+			#	print lll
 				ll.append(lll)
 			if bv:
 				lll = [self._VALUE, l[i]]
-				t = (self._VALUE, l[i])
-			#	print t
-				print lll
+			#	print lll
 				ll.append(lll)
 		if not ll:
 			return None
