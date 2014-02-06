@@ -16,7 +16,9 @@ class Lexer(object):
 	_ATTRIBUTE_PATTERN = r'[\w_]+\s*=\s*[\w\.\-]+' 
 	_PIN_PATTERN = r'\w+\s*:?\s*\w+'
 	_VALUE_PATTERN = '(^[0-9eu.+-]+)'
+	_VALUE_PATTERN_2 = '(=\w*.?\w*-?\w*)'
 	_NEW_LINE_PATTERN = '(^[+ ]+)'
+	_NAME_PATTERN = r'\w*\s*_?\s*\w*'
 	def _merge_two_string(self, s1, s2):
 		s2 = s1 + ' ' + s2
 		return s2
@@ -33,24 +35,27 @@ class Lexer(object):
 		d = {}
 		i = 0
 		ll = []
+		line_2 = ""
 		buf = StringIO.StringIO(s)
-		line = buf.readline()
-		line_2 = line
-		ll = self._check_element(line)
-		d[i] = ll
-		while line:
+		while True:
 			line = buf.readline()
-			if line.startswith('+'):
-				line = self._clean_string(line)
-				line_2 = self._clean_string(line_2)
-				line = self._merge_two_string(line_2, line)
+			if line:
+				if line.startswith('+'):
+					b = True;
+					line = self._clean_string(line)
+					line_2 = self._clean_string(line_2)
+					line = self._merge_two_string(line_2, line)
+					line_2 = line
+					continue
+				ll = self._check_element(line_2)
+				d[i] = ll
+				i = i + 1
 				line_2 = line
-				continue
-			ll = self._check_element(line_2)
-			d[i] = ll
-			i = i + 1
-			line_2 = line
-		return d
+			else:
+				ll = self._check_element(line_2)
+				d[i] = ll
+				i = i + 1
+				return d
 	def _is_attribute(self, s):
 		a = re.match(self._ATTRIBUTE_PATTERN, s)
 		if a:
@@ -83,6 +88,18 @@ class Lexer(object):
 			return True
 		else:
 			return False
+	def _tokenize_attribute(self, l):
+		ll = []
+		s = ''.join(l)
+		n = re.match(self._NAME_PATTERN, s)
+		v = re.search(self._VALUE_PATTERN_2, s)
+		ns = n.group()
+		vs = v.group()
+		if n != 0 and v != 0:
+			vs = vs.lstrip("= ")
+			ll.append(ns)
+			ll.append(vs)
+		return ll
 	def _check_element(self, s):
 		ll = []
 		t = re.match(self._TRANSISTOR_PATTERN, s)
@@ -128,21 +145,31 @@ class Lexer(object):
 			bv = self._is_value(l[i])
 			bn = self._is_new_line(l[i])
 			if ba:
-				t = (self._ATTRIBUTE, l[i])
-				print t
-				ll.append(t)
+				self._tokenize_attribute(l[i])
+				ll = self._tokenize_attribute(l[i])
+				lll = [self._ATTRIBUTE, ll]
+				t = (self._ATTRIBUTE, ll)
+			#	print t
+				print lll
+				ll.append(lll)
 			if be and i == 0:
+				lll = [self._ELEMENT, l[i]]
 				t = (self._ELEMENT, l[i])
-				print t
-				ll.append(t)
+			#	print t
+				print lll
+				ll.append(lll)
 			if bp and i != 0:
+				lll = [self._PIN, l[i]]
 				t = (self._PIN, l[i])
-				print t
-				ll.append(t)
+			#	print t
+				print lll
+				ll.append(lll)
 			if bv:
+				lll = [self._VALUE, l[i]]
 				t = (self._VALUE, l[i])
-				print t
-				ll.append(t)
+			#	print t
+				print lll
+				ll.append(lll)
 		if not ll:
 			return None
 		else:
