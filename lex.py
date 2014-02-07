@@ -2,6 +2,8 @@
 import re
 import StringIO
 from collections import defaultdict
+#from collections import OrderedDict
+import collections
 
 class Lexer(object):
 	_ELEMENT = "ELEMENT"
@@ -38,7 +40,8 @@ class Lexer(object):
 		l = s.split(" ")
 		return l
 	def _parse_one_line(self, s):
-		d = {}
+#		d = {}
+		d = collections.OrderedDict()
 		i = 0
 		ll = []
 		line_2 = ""
@@ -132,42 +135,42 @@ class Lexer(object):
 			if t:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
-				print ll
+			#	print ll
 				return ll
 			#	return "TRANSISTOR"
 			if r:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
-				print ll
+			#	print ll
 				return ll
 			#	return "RESISTOR"
 			if c:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
-				print ll
+			#	print ll
 				return ll
 			#	return "CAPACITOR"
 			if d:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
-				print ll
+			#	print ll
 				return ll
 			#	return "DIODE"
 			if n:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
-				print ll
+			#	print ll
 				return ll
 			#	return "NEW LINE"
 			if cc:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
-				print ll
+			#	print ll
 				return ll
 			if ce:
 				l = self._string_to_list(s)
 				ll = self._make_tokens(l)
-				print ll
+			#	print ll
 				return ll
 	def _make_tokens(self, l):
 		ll = []
