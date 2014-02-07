@@ -1,14 +1,17 @@
 
 import net_list
-import lex
+import adapter
 from pprint import pprint
+import cell
+import utils
 
 if __name__ == "__main__":
 	netlist = net_list.NetList()
-	lex = lex.Lexer()
-	st = netlist.read("test.spx_2")
-	s = lex._parse_one_line(st)
-	netlist.set_dictionary(s)
+#	lex = lex.Lexer()
+	fr = netlist.read("test.spx_2")
+	a = adapter.Adapter(fr)
+#	s = lex._parse_one_line(fr)
+	netlist.set_dictionary(a)
 #	pprint(s)
 #	print s[4][0]
 #	print s[1][0]
@@ -21,8 +24,16 @@ if __name__ == "__main__":
 #	print s[9][1][1]
 #	print s[19]
 #	print ss
-	ss = netlist._find_cell_by_name("NR2_V20_2")
-	print ss
-
-
+	d = a.get_dictionary()
+#	print "DICTIONARY", d[8][0][1]
+	o = netlist.get_cell("NR2_V20_3")
+	o.set_dictionary(a)
+	pins = o.get_pin_order()
+	pp = 'GND VSS VDD'
+	o.set_pin_order(pp)
+	r = o.get_pin_order()
+	print r
+	print d
+	
+#	print "aaa", d[1]
 

@@ -15,3 +15,9 @@ def string_to_list(s):
 	s = s.replace('\r','')
 	l = s.split(" ")
 	return l
+
+def format_input_string(s):
+	l = s.split(' ')
+	for i in xrange(len(l)):
+		l[i] = ['PIN', l[i]]
+	return l

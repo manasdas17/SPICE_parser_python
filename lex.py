@@ -4,6 +4,7 @@ import StringIO
 from collections import defaultdict
 #from collections import OrderedDict
 import collections
+import utils
 
 class Lexer(object):
 	_ELEMENT = "ELEMENT"
@@ -21,26 +22,11 @@ class Lexer(object):
 	_ELEMENT_PATTERN = '(^[a-zA-z]+[a-zA-Z0-9]*)'
 	_ATTRIBUTE_PATTERN = r'[\w_]+\s*=\s*[\w\.\-]+' 
 	_PIN_PATTERN = r'\w+\s*:?\s*\w*'
-	#_VALUE_PATTERN = '(^[0-9eu.+-]+)'
 	_VALUE_PATTERN = '(^[0-9]+.?[0-9eu+-]+)'
 	_VALUE_PATTERN_2 = '(=\w*.?\w*-?\w*)'
 	_NEW_LINE_PATTERN = '(^[+ ]+)'
 	_NAME_PATTERN = r'\w*\s*_?\s*\w*'
-	def _merge_two_string(self, s1, s2):
-		s2 = s1 + ' ' + s2
-		return s2
-	def _clean_string(self, s):
-		s = s.lstrip("+ ")
-		return s
-	def _string_to_list(self, s):
-		l = []
-		stack = []
-		s = s.replace('\n','')
-		s = s.replace('\r','')
-		l = s.split(" ")
-		return l
 	def _parse_one_line(self, s):
-#		d = {}
 		d = collections.OrderedDict()
 		i = 0
 		ll = []
@@ -50,9 +36,9 @@ class Lexer(object):
 			line = buf.readline()
 			if line:
 				if line.startswith('+'):
-					line = self._clean_string(line)
-					line_2 = self._clean_string(line_2)
-					line = self._merge_two_string(line_2, line)
+					line = utils.clean_string(line)
+					line_2 = utils.clean_string(line_2)
+					line = utils.merge_two_string(line_2, line)
 					line_2 = line
 					continue
 				ll = self._check_element(line_2)
@@ -133,42 +119,42 @@ class Lexer(object):
 			return "Unrecognizable element"
 		else:
 			if t:
-				l = self._string_to_list(s)
+				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
 			#	print ll
 				return ll
 			#	return "TRANSISTOR"
 			if r:
-				l = self._string_to_list(s)
+				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
 			#	print ll
 				return ll
 			#	return "RESISTOR"
 			if c:
-				l = self._string_to_list(s)
+				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
 			#	print ll
 				return ll
 			#	return "CAPACITOR"
 			if d:
-				l = self._string_to_list(s)
+				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
 			#	print ll
 				return ll
 			#	return "DIODE"
 			if n:
-				l = self._string_to_list(s)
+				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
 			#	print ll
 				return ll
 			#	return "NEW LINE"
 			if cc:
-				l = self._string_to_list(s)
+				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
 			#	print ll
 				return ll
 			if ce:
-				l = self._string_to_list(s)
+				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
 			#	print ll
 				return ll
