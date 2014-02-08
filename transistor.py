@@ -14,8 +14,14 @@ class Transistor(object):
 		self._model = m
 	def get_model(self):
 		return self._model
-	def set_attribute(self, a):
-		self._attribute.append(a)
+	def set_attribute(self, n, a):
+		for i in xrange(len(self._attributes)):
+			if self._attributes[i][0] == n:
+				self._attributes[i][1] = a
+	def get_attribute(self, n):
+		for i in xrange(len(self._attributes)):
+			if self._attributes[i][0] == n:
+				return self._attributes[i][1]
 	def set_pins(self, p):
 		self._pins = p
 	def set_pin(self, n, v):
@@ -41,6 +47,6 @@ class Transistor(object):
 	def set_attributes(self, l):
 		self._attributes = l
 	def get_attributes(self):
-		return self._attribute
+		return self._attributes
 	def get_type(self):
 		return self._TYPE

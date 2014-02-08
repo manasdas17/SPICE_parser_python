@@ -32,16 +32,24 @@ if __name__ == "__main__":
 	pp = 'GND VSS VDD'
 	o.set_pin_order(pp)
 	r = o.get_pin_order()
-	print r
+#	print r
 #	rr = o.get_pins()
 #	print rr
 	t = o.get_instance("XMNA1")
-	print t.get_name()
-	print t.get_pins()
+#	print t.get_name()
+#	print t.get_pins()
 	t.set_pin("D", "VDD")
-	print t.get_pins()
+#	print t.get_pins()
 	t.set_model("nch_2")
-	print t.get_model()
+#	print t.get_model()
+	attr_name = t.get_attribute("spba1")
+#	print "ATTR", attr_name
+#	attrs = t.get_attributes()
+#	print "AAAAAAA", attrs
+	t.set_attribute("w", 111)
+	attrs = t.get_attributes()
+	print "AAAAAAA", attrs
+	print t.get_attribute("w")
 #	print d[16]
 #	print r
 #	print "asda", d[4][1][0]
