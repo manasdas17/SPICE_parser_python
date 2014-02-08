@@ -3,6 +3,10 @@ import codecs
 import collections
 import cell
 import adapter
+#import resistor
+#import capacitor
+#import diode
+import transistor
 
 class NetList(object):
 	_dict = collections.OrderedDict()
@@ -36,11 +40,43 @@ class NetList(object):
 		name = self._dict[t[0]][1][1]
 		o.set_name(name)
 		l = self._dict[t[0]][2:]
-#		s = ''.join(l)
-#		print l
 		o.set_pin_order_with_list(l)
 		return o
 	def get_cell(self, n):
 		t = self._find_cell_by_name(n)
 		o = self._generate_cell_object(t)
+		inst = self._generate_all_instances_in_cell(t)
+		o.set_instance(inst)
+#		print l[0].get_type()
 		return o
+	def _generate_all_instances_in_cell(self, t):
+		instances = []
+		s = t[0]
+		pins = []
+		attributes = []
+		tr = transistor.Transistor()
+		for i in sorted(self._dict.keys())[s:]:
+			if self._dict[i][0][1] != ".ends":
+				if self._dict[i][0][0][0] == "ELEMENT" and self._dict[i][0][0][1] == "TRANSISTOR":
+					tr.set_name(self._dict[i][0][1])
+					l = self._dict[i]
+					tr.set_model(l[5][1])
+					for i in xrange(len(l[1:])):
+						if l[i][0] == "PIN" and i != 5:
+							pins.append(l[i][1])
+					tr.set_pins(pins)
+					for i in xrange(len(l)):
+						if l[i][0] == "ATTRIBUTE":
+							attributes.append(l[i][1])
+							tt = l[i][1]
+							attr_name = l[i][1][0]
+							attr_value = l[i][1][1]
+					tr.set_attributes(attributes)
+		instances.append(tr)
+		return instances
+
+					
+
+
+
+

@@ -13,6 +13,10 @@ class Lexer(object):
 	_VALUE = "VALUE"
 	_START = "START"
 	_END = "END"
+	_TRANSISTOR = "TRANSISTOR"
+	_RESISTOR = "RESISTOR"
+	_CAPACITOR = "CAPACITOR"
+	_DIODE = "DIODE"
 	_CELL_START_PATTERN = '(.SUBCKT.*)'
 	_CELL_END_PATTERN = '(^.ends)'
 	_TRANSISTOR_PATTERN = '(^[X|m|M][0-9a-zA-Z_]+)'
@@ -120,25 +124,25 @@ class Lexer(object):
 		else:
 			if t:
 				l = utils.string_to_list(s)
-				ll = self._make_tokens(l)
+				ll = self._make_tokens(l, self._TRANSISTOR)
 			#	print ll
 				return ll
 			#	return "TRANSISTOR"
 			if r:
 				l = utils.string_to_list(s)
-				ll = self._make_tokens(l)
+				ll = self._make_tokens(l, self._RESISTOR)
 			#	print ll
 				return ll
 			#	return "RESISTOR"
 			if c:
 				l = utils.string_to_list(s)
-				ll = self._make_tokens(l)
+				ll = self._make_tokens(l, self._CAPACITOR)
 			#	print ll
 				return ll
 			#	return "CAPACITOR"
 			if d:
 				l = utils.string_to_list(s)
-				ll = self._make_tokens(l)
+				ll = self._make_tokens(l, self._DIODE)
 			#	print ll
 				return ll
 			#	return "DIODE"
@@ -158,7 +162,7 @@ class Lexer(object):
 				ll = self._make_tokens(l)
 			#	print ll
 				return ll
-	def _make_tokens(self, l):
+	def _make_tokens(self, l, etype = None):
 		ll = []
 		for i in xrange(len(l)):
 			ba = self._is_attribute(l[i])
@@ -175,7 +179,7 @@ class Lexer(object):
 				ll.append(lll)
 				continue
 			if be and i == 0:
-				lll = [self._ELEMENT, l[i]]
+				lll = [[self._ELEMENT, etype], l[i]]
 				ll.append(lll)
 				continue
 			if bp and i != 0:

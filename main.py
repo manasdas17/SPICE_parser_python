@@ -26,14 +26,30 @@ if __name__ == "__main__":
 #	print ss
 	d = a.get_dictionary()
 #	print "DICTIONARY", d[8][0][1]
-	o = netlist.get_cell("NR2_V20_3")
+	o = netlist.get_cell("NR2_V20_2")
 	o.set_dictionary(a)
 	pins = o.get_pin_order()
 	pp = 'GND VSS VDD'
 	o.set_pin_order(pp)
 	r = o.get_pin_order()
 	print r
-	print d
+#	rr = o.get_pins()
+#	print rr
+	t = o.get_instance("XMNA1")
+	print t.get_name()
+	print t.get_pins()
+	t.set_pin("D", "VDD")
+	print t.get_pins()
+	t.set_model("nch_2")
+	print t.get_model()
+#	print d[16]
+#	print r
+#	print "asda", d[4][1][0]
+#	print d[4][0][0][0]
+#	print d[4][0][0][1]
+#	print d[4][1][0]
+#	print d[4][1][1]
+#	print d[5][0][1]
 	
 #	print "aaa", d[1]
 

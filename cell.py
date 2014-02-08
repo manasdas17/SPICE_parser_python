@@ -35,5 +35,19 @@ class Cell(object):
 		self._end = e 
 	def get_end(self):
 		return self._end
+	def get_pins(self):
+		return self._pins
+	def set_instance(self, o):
+#		self._instancie_list.append(o)
+		self._instancie_list = o
+	def get_instance(self, n):
+#		return self._instancie_list
+#		print n
+		for i in xrange(len(self._instancie_list)):
+			if n == self._instancie_list[i].get_name():
+#			print self._instancie_list[i][0]
+#				print self._instancie_list[i].get_name()
+				return self._instancie_list[i]
+
 #	def get_all_instances(self, n):
 		
