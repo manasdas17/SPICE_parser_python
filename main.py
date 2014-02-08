@@ -29,27 +29,35 @@ if __name__ == "__main__":
 	o = netlist.get_cell("NR2_V20_2")
 	o.set_dictionary(a)
 	pins = o.get_pin_order()
-	pp = 'GND VSS VDD'
+	pp = 'VS GND VSS VDD MOFSET'
 	o.set_pin_order(pp)
 	r = o.get_pin_order()
-#	print r
-#	rr = o.get_pins()
-#	print rr
+	print "CELL PIN ORDER", r
+	rr = o.get_pins()
+	print rr
 	t = o.get_instance("XMNA1")
-#	print t.get_name()
-#	print t.get_pins()
+	print t.get_name()
+	print t.get_pins()
 	t.set_pin("D", "VDD")
-#	print t.get_pins()
+	print t.get_pins()
 	t.set_model("nch_2")
-#	print t.get_model()
+	print t.get_model()
 	attr_name = t.get_attribute("spba1")
 #	print "ATTR", attr_name
 #	attrs = t.get_attributes()
 #	print "AAAAAAA", attrs
-	t.set_attribute("w", 111)
-	attrs = t.get_attributes()
-	print "AAAAAAA", attrs
+#	t.set_attribute("w", 111)
+#	attrs = t.get_attributes()
+#	print "AAAAAAA", attrs
 	print t.get_attribute("w")
+	t.set_pin("S", "MOFSET")
+	print "PINS", t.get_pins()
+	print d[16]
+	t.set_attribute("w", 22)
+	attrs = t.get_attributes()
+	print "BBBBBB", attrs
+	print "START", t.get_start()
+	print d[16]
 #	print d[16]
 #	print r
 #	print "asda", d[4][1][0]

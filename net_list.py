@@ -47,7 +47,6 @@ class NetList(object):
 		o = self._generate_cell_object(t)
 		inst = self._generate_all_instances_in_cell(t)
 		o.set_instance(inst)
-#		print l[0].get_type()
 		return o
 	def _generate_all_instances_in_cell(self, t):
 		instances = []
@@ -55,9 +54,11 @@ class NetList(object):
 		pins = []
 		attributes = []
 		tr = transistor.Transistor()
+		tr.set_dictionary(self._a)
 		for i in sorted(self._dict.keys())[s:]:
 			if self._dict[i][0][1] != ".ends":
 				if self._dict[i][0][0][0] == "ELEMENT" and self._dict[i][0][0][1] == "TRANSISTOR":
+					start = i
 					tr.set_name(self._dict[i][0][1])
 					l = self._dict[i]
 					tr.set_model(l[5][1])
@@ -72,6 +73,7 @@ class NetList(object):
 							attr_name = l[i][1][0]
 							attr_value = l[i][1][1]
 					tr.set_attributes(attributes)
+					tr.set_start(start)
 		instances.append(tr)
 		return instances
 
