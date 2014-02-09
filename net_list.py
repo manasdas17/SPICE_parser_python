@@ -3,7 +3,7 @@ import codecs
 import collections
 import cell
 import adapter
-#import resistor
+import resistor
 import capacitor
 #import diode
 import transistor
@@ -59,9 +59,10 @@ class NetList(object):
 				break
 			else: #self._dict[i][0][1] != ".ends":
 				if self._dict[i][0][0][0] == "ELEMENT" and self._dict[i][0][0][1] == "TRANSISTOR":
-					start = i
 					tr = transistor.Transistor()
 					tr.set_dictionary(self._a)
+					start = i
+					tr.set_start(start)
 					tr.set_name(self._dict[i][0][1])
 					l = self._dict[i]
 					tr.set_model(l[5][1])
@@ -77,12 +78,14 @@ class NetList(object):
 							attr_value = l[k][1][1]
 					pins = []
 					tr.set_attributes(attributes)
-					tr.set_start(start)
 					instances.append(tr)
 				if self._dict[i][0][0][0] == "ELEMENT" and self._dict[i][0][0][1] == "CAPACITOR":
+					pins = []
+					values = []
 					cp = capacitor.Capacitor()
 					cp.set_dictionary(self._a)
 					start = i
+					cp.set_start(start)
 					cp.set_name(self._dict[i][0][1])
 					l = self._dict[i]
 					for h in xrange(len(l)):
@@ -92,10 +95,24 @@ class NetList(object):
 							values.append(l[h][1])
 					cp.set_values(values)
 					cp.set_pins(pins)
-					cp.set_start(start)
+					instances.append(cp)
+				if self._dict[i][0][0][0] == "ELEMENT" and self._dict[i][0][0][1] == "RESISTOR":
 					pins = []
 					values = []
-					instances.append(cp)
+					rs = resistor.Resistor()
+					rs.set_dictionary(self._a)
+					start = i
+					rs.set_start(start)
+					rs.set_name(self._dict[i][0][1])
+					l = self._dict[i]
+					for h in xrange(len(l)):
+						if l[h][0] == "PIN":
+							pins.append(l[h][1])
+						if l[h][0] == "VALUE":
+							values.append(l[h][1])
+					rs.set_values(values)
+					rs.set_pins(pins)
+					instances.append(rs)
 		return instances
 
 					

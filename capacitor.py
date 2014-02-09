@@ -12,7 +12,10 @@ class Capacitor(object):
 	def set_dictionary(self, a):
 		self._dict = a.get_dictionary()
 	def set_name(self, n):
-		self._name = n
+		if n != None:
+			self._name = n
+			print "START", self._start
+			self._dict[self._start][0][1] = n
 	def get_name(self):
 		return self._name
 	def set_values(self, v):

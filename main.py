@@ -26,7 +26,7 @@ if __name__ == "__main__":
 #	print ss
 	d = a.get_dictionary()
 #	print "DICTIONARY", d[8][0][1]
-	o = netlist.get_cell("NR2_V20_1")
+	o = netlist.get_cell("NR2_V20_3")
 	o.set_dictionary(a)
 	pins = o.get_pin_order()
 	pp = 'VS GND VSS VDD MOFSET'
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 	print "CELL PIN ORDER", r
 	rr = o.get_pins()
 	print rr
-	t = o.get_instance("XMNA2")
+	t = o.get_instance("XMNA1")
 	if t != None:
 		print t.get_name()
 		print t.get_pins()
@@ -57,12 +57,22 @@ if __name__ == "__main__":
 		attrs = t.get_attributes()
 		print "BBBBBB", attrs
 		print "START", t.get_start()
-#	c = o.get_instance("C10")
+	c = o.get_instance("C10")
+	if c != None:
+		print "C10 PINS", c.get_pins()
 #	n = c.get_name()
 #	print "CAPACITOR", c.get_name()
-	print d[16]
+	print "FDFSFSDF", d
 	inst_list = o.get_all_instances()
 	print inst_list
+	r = o.get_instance("R1")
+	print d
+	if r != None:
+		print "R=", r.get_name(), r.get_start()
+		r.set_name("RR1")
+		print "PINS", r.get_pins()
+		print "RES NAME", r.get_name()
+	print d
 #	print d[16]
 #	print d[17][0][1]
 #	print "dddd", d[18]

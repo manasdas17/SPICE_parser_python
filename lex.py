@@ -26,7 +26,8 @@ class Lexer(object):
 	_ELEMENT_PATTERN = '(^[a-zA-z]+[a-zA-Z0-9]*)'
 	_ATTRIBUTE_PATTERN = r'[\w_]+\s*=\s*[\w\.\-]+' 
 #	_PIN_PATTERN = r'\w+\s*:?\s*\w*'
-	_PIN_PATTERN = r'(^[a-zA-Z]\w+\s*:?\s*\w*)'
+#	_PIN_PATTERN = r'(^[a-zA-Z]\w+\s*:?\s*\w*)'
+	_PIN_PATTERN = r'(^[a-zA-Z].*\w*\s*:?\s*\w*)'
 	_VALUE_PATTERN = '(^[0-9]+.?[0-9eu+-]+)'
 	_VALUE_PATTERN_2 = '(=\w*.?\w*-?\w*)'
 	_NEW_LINE_PATTERN = '(^[+ ]+)'
@@ -40,6 +41,8 @@ class Lexer(object):
 		while True:
 			line = buf.readline()
 			if line:
+				if line.startswith('*'):
+					continue
 				if line.startswith('+'):
 					line = utils.clean_string(line)
 					line_2 = utils.clean_string(line_2)
