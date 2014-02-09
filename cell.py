@@ -43,6 +43,13 @@ class Cell(object):
 		for i in xrange(len(self._instancie_list)):
 			if n == self._instancie_list[i].get_name():
 				return self._instancie_list[i]
+	def get_all_instance_objects(self):
+		return self._instancie_list
+	def get_all_instances(self):
+		l = []
+		for i in xrange(len(self._instancie_list)):
+			l.append(self._instancie_list[i].get_name())
+		return l
 
 #	def get_all_instances(self, n):
 		

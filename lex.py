@@ -1,8 +1,8 @@
 
 import re
 import StringIO
-from collections import defaultdict
-#from collections import OrderedDict
+#from collections import defaultdict
+from collections import OrderedDict
 import collections
 import utils
 
@@ -25,7 +25,8 @@ class Lexer(object):
 	_DIODE_PATTERN = '(^[d|D][0-9a-zA-Z_]+)'
 	_ELEMENT_PATTERN = '(^[a-zA-z]+[a-zA-Z0-9]*)'
 	_ATTRIBUTE_PATTERN = r'[\w_]+\s*=\s*[\w\.\-]+' 
-	_PIN_PATTERN = r'\w+\s*:?\s*\w*'
+#	_PIN_PATTERN = r'\w+\s*:?\s*\w*'
+	_PIN_PATTERN = r'(^[a-zA-Z]\w+\s*:?\s*\w*)'
 	_VALUE_PATTERN = '(^[0-9]+.?[0-9eu+-]+)'
 	_VALUE_PATTERN_2 = '(=\w*.?\w*-?\w*)'
 	_NEW_LINE_PATTERN = '(^[+ ]+)'
@@ -125,42 +126,30 @@ class Lexer(object):
 			if t:
 				l = utils.string_to_list(s)
 				ll = self._make_tokens(l, self._TRANSISTOR)
-			#	print ll
 				return ll
-			#	return "TRANSISTOR"
 			if r:
 				l = utils.string_to_list(s)
 				ll = self._make_tokens(l, self._RESISTOR)
-			#	print ll
 				return ll
-			#	return "RESISTOR"
 			if c:
 				l = utils.string_to_list(s)
 				ll = self._make_tokens(l, self._CAPACITOR)
-			#	print ll
 				return ll
-			#	return "CAPACITOR"
 			if d:
 				l = utils.string_to_list(s)
 				ll = self._make_tokens(l, self._DIODE)
-			#	print ll
 				return ll
-			#	return "DIODE"
 			if n:
 				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
-			#	print ll
 				return ll
-			#	return "NEW LINE"
 			if cc:
 				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
-			#	print ll
 				return ll
 			if ce:
 				l = utils.string_to_list(s)
 				ll = self._make_tokens(l)
-			#	print ll
 				return ll
 	def _make_tokens(self, l, etype = None):
 		ll = []

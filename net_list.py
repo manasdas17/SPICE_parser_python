@@ -4,7 +4,7 @@ import collections
 import cell
 import adapter
 #import resistor
-#import capacitor
+import capacitor
 #import diode
 import transistor
 
@@ -52,29 +52,50 @@ class NetList(object):
 		instances = []
 		s = t[0]
 		pins = []
+		values = []
 		attributes = []
-		tr = transistor.Transistor()
-		tr.set_dictionary(self._a)
 		for i in sorted(self._dict.keys())[s:]:
-			if self._dict[i][0][1] != ".ends":
+			if self._dict[i][0][1] == ".ends":
+				break
+			else: #self._dict[i][0][1] != ".ends":
 				if self._dict[i][0][0][0] == "ELEMENT" and self._dict[i][0][0][1] == "TRANSISTOR":
 					start = i
+					tr = transistor.Transistor()
+					tr.set_dictionary(self._a)
 					tr.set_name(self._dict[i][0][1])
 					l = self._dict[i]
 					tr.set_model(l[5][1])
-					for i in xrange(len(l[1:])):
-						if l[i][0] == "PIN" and i != 5:
-							pins.append(l[i][1])
+					for j in xrange(len(l[1:])):
+						if l[j][0] == "PIN" and j != 5:
+							pins.append(l[j][1])
 					tr.set_pins(pins)
-					for i in xrange(len(l)):
-						if l[i][0] == "ATTRIBUTE":
-							attributes.append(l[i][1])
-							tt = l[i][1]
-							attr_name = l[i][1][0]
-							attr_value = l[i][1][1]
+					for k in xrange(len(l)):
+						if l[k][0] == "ATTRIBUTE":
+							attributes.append(l[k][1])
+							tt = l[k][1]
+							attr_name = l[k][1][0]
+							attr_value = l[k][1][1]
+					pins = []
 					tr.set_attributes(attributes)
 					tr.set_start(start)
-		instances.append(tr)
+					instances.append(tr)
+				if self._dict[i][0][0][0] == "ELEMENT" and self._dict[i][0][0][1] == "CAPACITOR":
+					cp = capacitor.Capacitor()
+					cp.set_dictionary(self._a)
+					start = i
+					cp.set_name(self._dict[i][0][1])
+					l = self._dict[i]
+					for h in xrange(len(l)):
+						if l[h][0] == "PIN":
+							pins.append(l[h][1])
+						if l[h][0] == "VALUE":
+							values.append(l[h][1])
+					cp.set_values(values)
+					cp.set_pins(pins)
+					cp.set_start(start)
+					pins = []
+					values = []
+					instances.append(cp)
 		return instances
 
 					

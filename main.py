@@ -26,7 +26,7 @@ if __name__ == "__main__":
 #	print ss
 	d = a.get_dictionary()
 #	print "DICTIONARY", d[8][0][1]
-	o = netlist.get_cell("NR2_V20_2")
+	o = netlist.get_cell("NR2_V20_1")
 	o.set_dictionary(a)
 	pins = o.get_pin_order()
 	pp = 'VS GND VSS VDD MOFSET'
@@ -35,30 +35,37 @@ if __name__ == "__main__":
 	print "CELL PIN ORDER", r
 	rr = o.get_pins()
 	print rr
-	t = o.get_instance("XMNA1")
-	print t.get_name()
-	print t.get_pins()
-	t.set_pin("D", "VDD")
-	print t.get_pins()
-	t.set_model("nch_2")
-	print t.get_model()
-	attr_name = t.get_attribute("spba1")
+	t = o.get_instance("XMNA2")
+	if t != None:
+		print t.get_name()
+		print t.get_pins()
+		t.set_pin("D", "VDD")
+		print t.get_pins()
+		t.set_model("nch_2")
+		print t.get_model()
+		attr_name = t.get_attribute("spba1")
 #	print "ATTR", attr_name
 #	attrs = t.get_attributes()
 #	print "AAAAAAA", attrs
 #	t.set_attribute("w", 111)
 #	attrs = t.get_attributes()
 #	print "AAAAAAA", attrs
-	print t.get_attribute("w")
-	t.set_pin("S", "MOFSET")
-	print "PINS", t.get_pins()
+		print t.get_attribute("w")
+		t.set_pin("S", "MOFSET")
+		print "PINS", t.get_pins()
+		t.set_attribute("w", 22)
+		attrs = t.get_attributes()
+		print "BBBBBB", attrs
+		print "START", t.get_start()
+#	c = o.get_instance("C10")
+#	n = c.get_name()
+#	print "CAPACITOR", c.get_name()
 	print d[16]
-	t.set_attribute("w", 22)
-	attrs = t.get_attributes()
-	print "BBBBBB", attrs
-	print "START", t.get_start()
-	print d[16]
+	inst_list = o.get_all_instances()
+	print inst_list
 #	print d[16]
+#	print d[17][0][1]
+#	print "dddd", d[18]
 #	print r
 #	print "asda", d[4][1][0]
 #	print d[4][0][0][0]
