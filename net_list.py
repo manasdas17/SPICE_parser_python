@@ -10,18 +10,20 @@ import transistor
 
 class NetList(object):
 	_dict = collections.OrderedDict()
+	_output_file_name = None
 	def read(self, file_name):
 		f = open(file_name, "r+")
 		st = f.read()
 		if st.startswith(codecs.BOM_UTF8):
 			st = st.lstrip(codecs.BOM_UTF8)
+		f.close()
 		return st
 	def set_dictionary(self, a):
 		self._dict = a.get_dictionary()
 		self._a = a
 	def _get_cell_start_offset(self, n):
 		for e in self._dict:
-			if e != 0 and self._dict[e][0][1] == ".SUBCKT" and self._dict[e][1][1] == n:
+			if e != 0 and self._dict[e] != None and self._dict[e][0][1] == ".SUBCKT" and self._dict[e][1][1] == n:
 				return e
 	def _get_cell_end_offset(self, s, n):
 		for e in sorted(self._dict.keys())[s:]:
@@ -114,6 +116,23 @@ class NetList(object):
 					rs.set_pins(pins)
 					instances.append(rs)
 		return instances
+	def generate_netlist_output_file(self, n):
+		l = []
+		self._output_file_name = n
+		f = open(self._output_file_name, "w+")
+		for i in sorted(self._dict.keys()):
+			if self._dict[i] != None:
+				l = self._dict[i]
+				temp = ''
+				for j in xrange(len(l[0:])):
+					temp = temp + ' ' + ''.join(l[j][1])
+				f.write(temp)
+				f.write('\n')
+
+
+
+
+
 
 					
 

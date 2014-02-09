@@ -8,7 +8,8 @@ import utils
 if __name__ == "__main__":
 	netlist = net_list.NetList()
 #	lex = lex.Lexer()
-	fr = netlist.read("test.spx_2")
+#	fr = netlist.read("test.spx_2")
+	fr = netlist.read("test.spx")
 	a = adapter.Adapter(fr)
 #	s = lex._parse_one_line(fr)
 	netlist.set_dictionary(a)
@@ -26,23 +27,29 @@ if __name__ == "__main__":
 #	print ss
 	d = a.get_dictionary()
 #	print "DICTIONARY", d[8][0][1]
-	o = netlist.get_cell("NR2_V20_3")
+#	o = netlist.get_cell("NR2_V20_2")OR4B_CV20G02_8 
+	o = netlist.get_cell("OR4B_CV20G02_8")
 	o.set_dictionary(a)
 	pins = o.get_pin_order()
+	print "PINS ORDER", pins
 	pp = 'VS GND VSS VDD MOFSET'
 	o.set_pin_order(pp)
 	r = o.get_pin_order()
+	print "PINS ORDER AFTER", r
+	pp = 'VS GND VSS VDD MOFSET'
 	print "CELL PIN ORDER", r
 	rr = o.get_pins()
 	print rr
-	t = o.get_instance("XMNA1")
+	#t = o.get_instance("XMNA2")XMNA
+#	t = o.get_instance("XMNA")
+	t = o.get_instance("XMNA")
 	if t != None:
-		print t.get_name()
-		print t.get_pins()
+	#	print t.get_name()
+	#	print t.get_pins()
 		t.set_pin("D", "VDD")
-		print t.get_pins()
+	#	print t.get_pins()
 		t.set_model("nch_2")
-		print t.get_model()
+	#	print t.get_model()
 		attr_name = t.get_attribute("spba1")
 #	print "ATTR", attr_name
 #	attrs = t.get_attributes()
@@ -50,29 +57,31 @@ if __name__ == "__main__":
 #	t.set_attribute("w", 111)
 #	attrs = t.get_attributes()
 #	print "AAAAAAA", attrs
-		print t.get_attribute("w")
+	#	print t.get_attribute('w')
 		t.set_pin("S", "MOFSET")
-		print "PINS", t.get_pins()
-		t.set_attribute("w", 22)
+	#	print "PINS", t.get_pins()
+		t.set_attribute('w', '0.29up')
 		attrs = t.get_attributes()
-		print "BBBBBB", attrs
-		print "START", t.get_start()
+	#	print "BBBBBB", attrs
+	#	print "START", t.get_start()
 	c = o.get_instance("C10")
-	if c != None:
-		print "C10 PINS", c.get_pins()
+#	if c != None:
+	#	print "C10 PINS", c.get_pins()
 #	n = c.get_name()
 #	print "CAPACITOR", c.get_name()
-	print "FDFSFSDF", d
-	inst_list = o.get_all_instances()
-	print inst_list
+#	print "FDFSFSDF", d
+#	inst_list = o.get_all_instances()
+#	print inst_list
 	r = o.get_instance("R1")
-	print d
+#	print d
 	if r != None:
-		print "R=", r.get_name(), r.get_start()
+#		print "R=", r.get_name(), r.get_start()
 		r.set_name("RR1")
-		print "PINS", r.get_pins()
-		print "RES NAME", r.get_name()
-	print d
+#		print "PINS", r.get_pins()
+#		print "RES NAME", r.get_name()
+#	print d
+#	a.set_dictionary(d)
+	netlist.generate_netlist_output_file("OUTPUT")
 #	print d[16]
 #	print d[17][0][1]
 #	print "dddd", d[18]

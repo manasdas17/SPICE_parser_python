@@ -41,7 +41,7 @@ class Lexer(object):
 		while True:
 			line = buf.readline()
 			if line:
-				if line.startswith('*'):
+				if line.startswith('*') or line == '' or line == '\n':
 					continue
 				if line.startswith('+'):
 					line = utils.clean_string(line)

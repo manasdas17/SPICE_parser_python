@@ -14,7 +14,6 @@ class Resistor(object):
 	def set_name(self, n):
 		if n != None:
 			self._name = n
-			print "START", self._start
 			self._dict[self._start][0][1] = n
 	def get_name(self):
 		return self._name

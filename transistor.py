@@ -25,10 +25,25 @@ class Transistor(object):
 	def get_start(self):
 		return self._start
 	def set_attribute(self, n, a):
-		for i in xrange(len(self._attributes)):
-			if self._attributes[i][0] == n:
-				self._attributes[i][1] = a
-				self._dict[self._start][i][1] = a
+		for i in sorted(self._dict.keys()):
+	#		if self._attributes[i][0] == n:
+	#		if t1 == t2 and len(t1) == len(t2):
+			l = self._dict[i]
+			if l != None:
+				for j in xrange(len(l)):
+					if(l[j][1][0] == n):
+						self._dict[self._start][j][1][1] = a
+						i = self._find_element_offset_in_attributes_list(n)
+						self._attributes[i][1] = a
+						return
+#				if self._dict[i][0] == n:
+#					self._attributes[i][1] = a
+#					i = self._find_element_offset_in_attributes_list(n)
+#					self._dict[self._start][i][1] = a
+	def _find_element_offset_in_attributes_list(self, n):
+			for i in xrange(len(self._attributes)):
+				if self._attributes[i][0] == n:
+					return i
 	def get_attribute(self, n):
 		for i in xrange(len(self._attributes)):
 			if self._attributes[i][0] == n:
