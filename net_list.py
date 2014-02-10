@@ -125,7 +125,13 @@ class NetList(object):
 				l = self._dict[i]
 				temp = ''
 				for j in xrange(len(l[0:])):
-					temp = temp + ' ' + ''.join(l[j][1])
+					if l[j][0] == "ATTRIBUTE":
+						first = l[j][1][0]
+						second = l[j][1][1]
+						res = ''.join(l[j][1][0]) + ' = ' + ''.join(l[j][1][1])
+						temp = temp + ' ' + res
+					else:
+						temp = temp + ' ' + ''.join(l[j][1])
 				f.write(temp)
 				f.write('\n')
 
