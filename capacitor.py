@@ -37,19 +37,8 @@ class Capacitor(object):
 				return self._attributes[i][1]
 	def set_pins(self, p):
 		self._pins = p
-	def set_pin(self, n, v):
-		if n == "S":
-			self._pins[0] = v
-			self._dict[self._start][1][1] = v
-		if n == "D":
-			self._pins[1] = v
-			self._dict[self._start][2][1] = v
-		if n == "G":
-			self._pins[2] = v
-			self._dict[self._start][3][1] = v
-		if n == "B":
-			self._pins[3] = v
-			self._dict[self._start][4][1] = v
+#	def set_pin(self, n, v):
+		#################
 	def get_pin(self, n, v):
 		if n == "S":
 			return self._pins[0]
