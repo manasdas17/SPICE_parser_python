@@ -50,6 +50,48 @@ class NetList(object):
 		inst = self._generate_all_instances_in_cell(t)
 		o.set_instance(inst)
 		return o
+	def get_all_instances(self, start):
+		inst_names = []
+		t = (start,)
+		inst = self._generate_all_instances_in_cell(t)
+		for i in xrange(len(inst)):
+			inst_names.append(inst[i].get_name())
+		return inst_names
+	def _get_all_cell_bounds(self):
+		start = None
+		end = None
+		stack = []
+		l = []
+		t = ()
+		for i in sorted(self._dict.keys()):
+			l = self._dict[i]
+			if not l:
+				continue
+			if self._dict[i][0][1] == ".SUBCKT":
+				start = i
+			if self._dict[i][0][1] == ".ends":
+				end = i
+			if start != None and end != None:
+				t = (start, end)
+				stack.append(t)
+				start = None
+				end = None
+		return stack
+	def _get_all_cells_objects(self):
+		cell_list = []
+		l = self._get_all_cell_bounds()
+		for i in xrange(len(l)):
+			t = l[i]
+			o = self._generate_cell_object(t)
+			cell_list.append(o)
+		return cell_list
+	def get_all_cells(self):
+		out = []
+		l = self._get_all_cells_objects()
+		for i in xrange(len(l)):
+			name = l[i].get_name()
+			out.append(name)
+		return out
 	def _generate_all_instances_in_cell(self, t):
 		instances = []
 		s = t[0]
